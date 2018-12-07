@@ -1,7 +1,7 @@
 public class Consumer implements Runnable {
-    private Hotel hotel;
+    private MyQueue hotel;
 
-    public Consumer(Hotel hotel) {
+    public Consumer(MyQueue hotel) {
         this.hotel = hotel;
     }
 

@@ -1,10 +1,10 @@
-public class Producer implements Runnable{
-    private Hotel hotel;
-    private Hotel id;
-    public Producer() {
-    }
+import java.time.LocalDate;
 
-        public Producer(Hotel hotel) {
+public class Producer implements Runnable{
+    private MyQueue hotel;
+    private MyQueue id;
+
+        public Producer(MyQueue hotel) {
             this.hotel = hotel;
         }
 
@@ -15,10 +15,10 @@ public class Producer implements Runnable{
                 try {
                     Thread.currentThread().setName("Loader "+id);
 
-                    //Time to load the goods
-                    Thread.sleep(500);
-                    Request request = (Request) hotel.get(id);
-                    if(request!=null) {
+//                    Thread.sleep(500);
+                    Request request1 = new Request(12,"Otel", LocalDate.now());
+                    boolean request =  hotel.add(request1);
+                    if(request) {
                             Thread.sleep(500);
                         }
                 } catch (InterruptedException e) {

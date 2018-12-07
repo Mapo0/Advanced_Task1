@@ -1,14 +1,13 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Hotel {
+public class MyQueue {
     private List<Request> listReq;
     public static final int limitReq = 15;
     private static final int maxQue = 5;
-    private static final int minQue = 1;
     int reqCounter = 0;
 
-    public Hotel() {
+    public MyQueue() {
         listReq = new ArrayList<>();
     }
 
@@ -33,9 +32,9 @@ public class Hotel {
         return true;
     }
 
-    public synchronized Request get(Hotel id) {
+    public synchronized Request get(MyQueue id) {
         try {
-            if (reqCounter > minQue) {
+            if (reqCounter > limitReq) {
                 notifyAll();
                 for (Request request : listReq) {
                     if (request.getId() == 0) {

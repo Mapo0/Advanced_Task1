@@ -2,16 +2,16 @@ import java.time.LocalDate;
 import java.util.Random;
 
 public class GenerateRequest implements Runnable {
-    private Hotel hotel;
+    private MyQueue hotel;
 
-    public GenerateRequest(Hotel hotel, int i) {
+    public GenerateRequest(MyQueue hotel) {
         this.hotel = hotel;
     }
 
     @Override
     public void run() {
         int count= 0;
-        while (count<Hotel.limitReq){
+        while (count< MyQueue.limitReq){
             Thread.currentThread().setName("Request generator");
             count++;
             hotel.add(new Request(getRandomId(),getRandomName(),getRandomDate()));
