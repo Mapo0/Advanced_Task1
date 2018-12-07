@@ -1,29 +1,57 @@
-public class Hotel {
-    private int id=0;
+import java.util.ArrayList;
+import java.util.List;
 
-    public synchronized void get(){
-        while (id <6)
-            try {
-                wait();
-            }catch  (InterruptedException e) {
-                e.printStackTrace();
-            }
-            id--;
-            System.out.println(Thread.currentThread().getName() +" "+ "Забрал 1 запись " );
-            System.out.println("всего записей" + " " + id);
-            notifyAll();
+public class Hotel {
+    private List<Request> listReq;
+    public static final int limitReq = 15;
+    private static final int maxQue = 5;
+    private static final int minQue = 1;
+    int reqCounter = 0;
+
+    public Hotel() {
+        listReq = new ArrayList<>();
     }
 
-    public synchronized void put(){
-        while (id>=15)
-            try {
+    public synchronized boolean add(Request element) {
+        try {
+            if (reqCounter < maxQue) {
+                notifyAll();
+                listReq.add(element);
+                String info = String.format("%s + Пришел запрос: %s %s %s", listReq.size(), element.getId(), element.getName(), element.getDate(), Thread.currentThread().getName());
+                System.out.println(info);
+                reqCounter++;
+
+            } else {
+                System.out.println(listReq.size() + "> Количество запросов переполнено: " + Thread.currentThread().getName());
                 wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                return false;
             }
-            id++;
-        System.out.println(Thread.currentThread().getName()+" " + "Добавил 1 запись " );
-        System.out.println("всего записей" + " " + id);
-        notifyAll();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public synchronized Request get(Hotel id) {
+        try {
+            if (reqCounter > minQue) {
+                notifyAll();
+                for (Request request : listReq) {
+                    if (request.getId() == 0) {
+                        reqCounter--;
+                        System.out.println(listReq.size() + "- Забрали запрос из очереди: " + Thread.currentThread().getName());
+                        listReq.remove(request);
+                        return request;
+                    }
+                }
+            }
+            System.out.println("0 < В очереди нет запросов");
+            wait();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

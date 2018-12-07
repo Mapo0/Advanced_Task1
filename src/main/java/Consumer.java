@@ -1,12 +1,13 @@
 public class Consumer implements Runnable {
-    Hotel hotel;
+    private Hotel hotel;
 
-     public Consumer(Hotel hotel) {
+    public Consumer(Hotel hotel) {
         this.hotel = hotel;
     }
-    public void run(){
-        for (int i=0; i<5; i++){
-            hotel.get();
-        }
+
+    @Override
+    public void run() {
+
     }
 }
+
