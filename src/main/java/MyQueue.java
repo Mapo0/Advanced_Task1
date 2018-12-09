@@ -2,55 +2,51 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MyQueue {
-    private List<Request> listReq;
+
     public static final int limitReq = 15;
     private static final int maxQue = 5;
-    int reqCounter = 0;
+    private volatile int getCounter = 0;
+    private volatile int putCounter = 0;
+    private List<Request> listReq =new ArrayList<>();
 
-    public MyQueue() {
-        listReq = new ArrayList<>();
-    }
-
-    public synchronized boolean add(Request element) {
-        try {
-            if (reqCounter < maxQue) {
-                notifyAll();
-                listReq.add(element);
-                String info = String.format("%s + Пришел запрос: %s %s %s", listReq.size(), element.getId(), element.getName(), element.getDate(), Thread.currentThread().getName());
-                System.out.println(info);
-                reqCounter++;
-
+    public synchronized void get ( ) {
+        while (listReq.isEmpty()) {
+            if (getCounter < limitReq) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             } else {
-                System.out.println(listReq.size() + "> Количество запросов переполнено: " + Thread.currentThread().getName());
-                wait();
-                return false;
+                Thread.currentThread().interrupt();
+                return;
             }
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
-        return true;
+        if (getCounter < limitReq) {
+            listReq.remove(listReq.size() - 1);
+            System.out.println("produce обработал запрос" + Thread.currentThread().getName());
+            notifyAll();
+            getCounter++;
+        } else
+            Thread.currentThread().interrupt();
     }
 
-    public synchronized Request get(MyQueue id) {
-        try {
-            if (reqCounter > limitReq) {
-                notifyAll();
-                for (Request request : listReq) {
-                    if (request.getId() == 0) {
-                        reqCounter--;
-                        System.out.println(listReq.size() + "- Забрали запрос из очереди: " + Thread.currentThread().getName());
-                        listReq.remove(request);
-                        return request;
-                    }
+    public synchronized void put () {
+        if (putCounter < limitReq) {
+            while (listReq.size() >= maxQue) {
+
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
-            System.out.println("0 < В очереди нет запросов");
-            wait();
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null;
+            if (putCounter < limitReq) {
+                listReq.add(new Request());
+                System.out.println("consumer создал запрос" + Thread.currentThread().getName());
+                notifyAll();
+                putCounter++;
+            }
+        } else Thread.currentThread().interrupt();
     }
 }

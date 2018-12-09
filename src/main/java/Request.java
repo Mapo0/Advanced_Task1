@@ -1,18 +1,14 @@
 import java.time.LocalDate;
 
 public class Request {
-    private int id;
     private String name;
     private LocalDate date;
 
-    public Request(int id, String name, LocalDate date) {
-        this.id = id;
+    public Request(String name, LocalDate date) {
         this.name = name;
         this.date = date;
     }
-
-    public int getId() {
-        return id;
+    public Request( ) {
     }
 
     public String getName() {
@@ -21,5 +17,10 @@ public class Request {
 
     public LocalDate getDate() {
         return date;
+    }
+
+    @Override
+    public String toString() {
+        return "Request{" + "name='" + name + '\'' + ", date=" + date + '}';
     }
 }
