@@ -1,7 +1,12 @@
+import org.apache.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class MyQueue {
+
+    private static Logger logger = Logger.getLogger(MyQueue.class.getName());
 
     public static final int limitReq = 15;
     private static final int maxQue = 5;
@@ -16,6 +21,7 @@ public class MyQueue {
                     wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    logger.error("Error: ", e);
                 }
             } else {
                 Thread.currentThread().interrupt();
@@ -39,6 +45,7 @@ public class MyQueue {
                     wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    logger.error("Error: ", e);
                 }
             }
             if (putCounter < limitReq) {
