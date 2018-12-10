@@ -21,6 +21,7 @@ public class MyQueue {
                     wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    logger.info("собщение об ошибке ");
                     logger.error("Error: ", e);
                 }
             } else {
@@ -30,7 +31,7 @@ public class MyQueue {
         }
         if (getCounter < limitReq) {
             listReq.remove(listReq.size() - 1);
-            System.out.println("produce обработал запрос" + Thread.currentThread().getName());
+            logger.info("produce обработал запрос" + Thread.currentThread().getName());
             notifyAll();
             getCounter++;
         } else
@@ -45,12 +46,13 @@ public class MyQueue {
                     wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    logger.info("еще одно сообщение об ошибке , КЕК");
                     logger.error("Error: ", e);
                 }
             }
             if (putCounter < limitReq) {
                 listReq.add(new Request());
-                System.out.println("consumer создал запрос" + Thread.currentThread().getName());
+                logger.info("consumer создал запрос" + Thread.currentThread().getName());
                 notifyAll();
                 putCounter++;
             }
